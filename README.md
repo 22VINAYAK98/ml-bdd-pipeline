@@ -34,9 +34,18 @@ ml-bdd-pipeline/
 │   │   └── utils.py           # visualization utilities
 │   │
 │   ├── analysis/              # AnAlysis and statistics scripts
+│   │   ├── environmental_analysis.py
+│   │   ├── environmental_visualization.py
+│   │   ├── object_analysis.py
+│   │   └── object_visualization.py
+│   │
 │   ├── train/                 # training / validation pipeline
 │   │
 │   ├── tests/
+│   │   ├── test_environmental_analysis.py
+│   │   ├── test_environmental_visualization.py
+│   │   ├── test_object_analysis.py
+│   │   ├── test_object_visualization.py
 │   │   └── test_data_pipeline.py
 │   │
 │   └── main.py
@@ -265,6 +274,311 @@ outputs/
 * Local dataset mounting to avoid committing large files
 
 ---
+
+# ADAS-Oriented Dataset Analysis Approach
+
+ADAS perception systems have very different expectations compared to general-purpose computer vision systems.
+Because of this, the dataset analysis was intentionally designed from an autonomous driving perception perspective rather than performing only generic dataset EDA.
+
+The analysis was mainly divided into two major groups:
+
+---
+
+# 1. Environmental Analysis
+
+Environmental analysis focuses on understanding operational driving conditions under which the perception system is expected to work.
+
+Current environmental analysis includes:
+
+* weather distribution
+* scene distribution
+* time-of-day distribution
+
+This analysis helps understand:
+
+* environmental robustness
+* operational domain coverage
+* illumination variability
+* driving condition imbalance
+
+---
+
+# 2. Object-Level Analysis
+
+Object-level analysis focuses on perception difficulty and safety-critical object understanding.
+
+Current object analysis includes:
+
+* object class distribution
+* bounding box area distribution
+* object density analysis
+* occlusion statistics
+* truncation statistics
+* class distribution across time-of-day
+* vulnerable road user (VRU) risk analysis
+
+This analysis helps understand:
+
+* perception complexity
+* long-range detection difficulty
+* nighttime perception challenges
+* vulnerable road user visibility
+* safety-critical perception scenarios
+
+The overall objective was to structure analysis around realistic autonomous driving perception challenges instead of only generating generic dataset statistics.
+
+---
+
+# Analysis Pipeline Architecture
+
+```text
+BDD Dataset
+     ↓
+Parser Layer
+     ↓
+Filtering Layer
+     ↓
+Structured Entities
+     ↓
+Analysis Pipelines
+     ↓
+Visualization Layer
+     ↓
+ADAS-Oriented Insights
+```
+
+---
+
+# Analysis File Responsibilities
+
+## `environmental_analysis.py`
+
+Responsible for operational driving condition analysis.
+
+Current analysis:
+
+* weather distribution
+* scene distribution
+* time-of-day distribution
+
+---
+
+## `environmental_visualization.py`
+
+Responsible for visualizing environmental statistics.
+
+Generated plots:
+
+* weather distribution
+* scene distribution
+* time-of-day distribution
+
+---
+
+## `object_analysis.py`
+
+Responsible for object-level perception analysis.
+
+Current analysis:
+
+* object class distribution
+* bounding box statistics
+* object density
+* occlusion statistics
+* truncation statistics
+* class distribution across time-of-day
+* vulnerable road user analysis
+
+---
+
+## `object_visualization.py`
+
+Responsible for visualizing perception-oriented object statistics.
+
+Generated plots:
+
+* object class distribution
+* bbox area distribution
+* occlusion distribution
+* class distribution across time-of-day
+* VRU perception risk analysis
+
+---
+
+# Running Analysis Pipelines
+
+## Run Environmental Analysis
+
+```bash
+docker run --rm \
+-v $(pwd)/data:/app/data \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_environmental_analysis
+```
+
+---
+
+## Run Environmental Visualization
+
+```bash
+docker run --rm \
+-v $(pwd)/data:/app/data \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_environmental_visualization
+```
+
+---
+
+## Run Object Analysis
+
+```bash
+docker run --rm \
+-v $(pwd)/data:/app/data \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_object_analysis
+```
+
+---
+
+## Run Object Visualization
+
+```bash
+docker run --rm \
+-v $(pwd)/data:/app/data \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_object_visualization
+```
+
+---
+
+# Environmental Analysis Results
+
+## Weather Distribution
+
+![Weather Distribution](outputs/weather_distribution.png)
+
+### Observation
+
+Clear weather dominates the dataset significantly while adverse conditions such as foggy and snowy weather are comparatively underrepresented.
+
+### ADAS Significance
+
+Perception systems trained mostly on clear-weather data may show reduced robustness under degraded visibility conditions.
+
+---
+
+## Scene Distribution
+
+![Scene Distribution](outputs/scene_distribution.png)
+
+### Observation
+
+City street scenes dominate the dataset followed by highway and residential scenarios.
+
+### ADAS Significance
+
+The dataset appears strongly urban-focused, which is useful for dense traffic perception analysis but may underrepresent uncommon operational domains.
+
+---
+
+## Time Of Day Distribution
+
+![Time Of Day Distribution](outputs/timeofday_distribution.png)
+
+### Observation
+
+Daytime scenes dominate the dataset while dawn/dusk scenarios are comparatively limited.
+
+### ADAS Significance
+
+Heavy daytime dominance may reduce perception robustness under low-illumination driving conditions.
+
+---
+
+# Object Analysis Results
+
+## Object Class Distribution
+
+![Object Class Distribution](outputs/class_distribution.png)
+
+### Observation
+
+Cars dominate the dataset significantly while vulnerable road users such as riders and motorcycles appear comparatively less frequent.
+
+### ADAS Significance
+
+Heavy class imbalance may bias object detectors toward dominant vehicle classes while reducing robustness for safety-critical vulnerable road users.
+
+---
+
+## Bounding Box Area Distribution
+
+![Bounding Box Area Distribution](outputs/bbox_area_distribution.png)
+
+### Observation
+
+The bounding box area distribution is heavily right-skewed, indicating a large concentration of very small objects.
+
+### ADAS Significance
+
+Small bounding boxes often correspond to distant traffic participants or infrastructure, making long-range perception significantly more difficult.
+
+---
+
+## Occlusion Distribution
+
+![Occlusion Distribution](outputs/occlusion_distribution.png)
+
+### Observation
+
+Approximately 47% of objects appear partially occluded.
+
+### ADAS Significance
+
+High occlusion ratios indicate realistic urban driving complexity and increased perception difficulty for detection and tracking systems.
+
+---
+
+## Class Distribution Across Time Of Day
+
+![Class Distribution Across Time Of Day](outputs/timeofday_class_distribution.png)
+
+### Observation
+
+Object visibility distribution changes noticeably across daytime, nighttime and dawn/dusk conditions.
+
+### ADAS Significance
+
+Illumination conditions significantly affect perception robustness and may impact detector reliability during nighttime driving.
+
+---
+
+## VRU Perception Risk Analysis
+
+![VRU Perception Risk Analysis](outputs/vru_perception_risk_analysis.png)
+
+### Observation
+
+Nighttime occluded vulnerable road users form a comparatively smaller but highly important subset of perception scenarios.
+
+### ADAS Significance
+
+Night + occlusion + vulnerable road users represent one of the most safety-critical and difficult perception conditions for autonomous driving systems.
+
+---
+
+# Key Findings
+
+* Nearly half of the detected objects are partially occluded, indicating realistic urban driving complexity.
+* The dataset is strongly dominated by daytime and clear-weather scenarios.
+* Vulnerable road users are comparatively less represented than vehicle classes.
+* Small object dominance suggests substantial long-range perception challenges.
+* Nighttime occluded VRUs represent highly safety-critical perception scenarios.
+
 
 # Development Workflow
 

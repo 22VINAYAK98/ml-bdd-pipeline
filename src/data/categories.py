@@ -18,3 +18,9 @@ DETECTION_CLASSES = {
 }
 
 
+VRU_CLASSES = [
+    "person",
+    "rider",
+    "bike",
+    "motor",
+]
