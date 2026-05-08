@@ -28,10 +28,17 @@ class Annotation:
 @dataclass
 class ImageRecord:
     image_name: str
+
     image_path: str
 
+    image_width: int
+
+    image_height: int
+
     weather: str
+
     scene: str
+
     timeofday: str
 
     timestamp: int

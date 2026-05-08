@@ -4,3 +4,5 @@ matplotlib
 matplotlib-venn
 opencv-python
 pyyaml
+Pillow
+ultralytics

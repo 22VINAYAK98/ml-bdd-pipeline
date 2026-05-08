@@ -3,6 +3,7 @@ BDD100K dataset parser utilities.
 """
 
 import json
+from PIL import Image
 from pathlib import Path
 
 from .entities import (
@@ -69,15 +70,40 @@ class BDDParser:
 
             annotations.append(annotation)
 
+        image_path = str(self.image_dir / image_name)
+
+        image = Image.open(image_path)
+
+        image_width, image_height = image.size
+
         return ImageRecord(
             image_name=image_name,
-            image_path=str(self.image_dir / image_name),
 
-            weather=attributes.get("weather", "unknown"),
-            scene=attributes.get("scene", "unknown"),
-            timeofday=attributes.get("timeofday", "unknown"),
+            image_path=image_path,
 
-            timestamp=item.get("timestamp", -1),
+            image_width=image_width,
+
+            image_height=image_height,
+
+            weather=attributes.get(
+                "weather",
+                "unknown",
+            ),
+
+            scene=attributes.get(
+                "scene",
+                "unknown",
+            ),
+
+            timeofday=attributes.get(
+                "timeofday",
+                "unknown",
+            ),
+
+            timestamp=item.get(
+                "timestamp",
+                -1,
+            ),
 
             annotations=annotations,
         )

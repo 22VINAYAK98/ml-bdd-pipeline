@@ -18,6 +18,21 @@ DETECTION_CLASSES = {
 }
 
 
+CLASS_TO_ID = {
+
+    "pedestrian": 0,
+    "rider": 1,
+    "car": 2,
+    "truck": 3,
+    "bus": 4,
+    "train": 5,
+    "motorcycle": 6,
+    "bicycle": 7,
+    "traffic light": 8,
+    "traffic sign": 9,
+}
+
+
 VRU_CLASSES = [
     "person",
     "rider",
