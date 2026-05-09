@@ -978,27 +978,7 @@ python -m src.tests.test_yolo_converter
 
 ---
 
-# Current Status
-
-The current pipeline already supports:
-
-* structured dataset loading
-* ADAS-oriented analysis
-* curriculum-aware training preparation
-* model-agnostic orchestration
-* YOLO dataset generation
-* modular detector integration
-* reusable training architecture
-
-The next stage would involve:
-
-* full YOLO training integration
-* prediction visualization
-* perception failure analysis
-* VRU-focused evaluation
-* curriculum-stage performance compariso# Evaluation
-
-## 1. Quantitative Analysis 
+## * Quantitative Analysis 
 
 ## Evaluation Architecture and ADAS-Oriented Benchmarking Strategy
 
