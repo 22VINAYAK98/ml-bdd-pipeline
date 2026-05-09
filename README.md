@@ -26,33 +26,72 @@ Annotations related to lane markings and drivable areas are filtered out during 
 ml-bdd-pipeline/
 ├── src/
 │   ├── data/
-│   │   ├── categories.py      # supported BDD detection classes
-│   │   ├── entities.py        # structured dataset entities
-│   │   ├── filters.py         # annotation filtering logic
-│   │   ├── parser.py          # JSON parsing utilities
-│   │   ├── loader.py          # dataset/image loading
-│   │   └── utils.py           # visualization utilities
+│   │   ├── categories.py
+│   │   ├── entities.py
+│   │   ├── filters.py
+│   │   ├── parser.py
+│   │   ├── loader.py
+│   │   └── utils.py
 │   │
-│   ├── analysis/              # AnAlysis and statistics scripts
+│   ├── analysis/
 │   │   ├── environmental_analysis.py
 │   │   ├── environmental_visualization.py
 │   │   ├── object_analysis.py
 │   │   └── object_visualization.py
 │   │
-│   ├── train/                 # training / validation pipeline
+│   ├── train/
+│   │   ├── curriculum/
+│   │   │   ├── difficulty_analyzer.py
+│   │   │   ├── curriculum_scheduler.py
+│   │   │   └── curriculum_loader.py
+│   │   │
+│   │   ├── pipeline/
+│   │   │   └── trainer.py
+│   │   │
+│   │   ├── strategies/
+│   │   │   ├── base_strategy.py
+│   │   │   └── yolo_strategy.py
+│   │   │
+│   │   └── utils/
+│   │       └── dataset_converter.py
+│   │
+│   ├── evaluation/
+│   │   ├── benchmark/
+│   │   │   ├── curriculum_benchmark.py
+│   │   │   └── scene_benchmark.py
+│   │   │
+│   │   ├── metrics/
+│   │   │   └── quantitative_evaluator.py
+│   │   │
+│   │   └── visualizer/
+│   │       ├── gt_vs_prediction_visualizer.py
+│   │       ├── metrics_visualizer.py
+│   │       └── prediction_visualizer.py
 │   │
 │   ├── tests/
+│   │   ├── test_data_pipeline.py
+│   │   │
 │   │   ├── test_environmental_analysis.py
 │   │   ├── test_environmental_visualization.py
 │   │   ├── test_object_analysis.py
 │   │   ├── test_object_visualization.py
-│   │   └── test_data_pipeline.py
+│   │   │
+│   │   ├── test_difficulty_analyzer.py
+│   │   ├── test_curriculum_loader.py
+│   │   ├── test_training_pipeline.py
+│   │   ├── test_yolo_converter.py
+│   │   │
+│   │   ├── test_scene_benchmark.py
+│   │   ├── test_scene_based_gt_vs_prediction_visualizer.py
+│   │   ├── test_curriculum_based_gt_vs_prediction_visualizer.py
+│   │   ├── test_quantitative_curriculum_evaluator.py
+│   │   └── test_metrics_visualizer.py
 │   │
 │   └── main.py
 │
-├── data/                      # local dataset (ignored by Git)
-├── outputs/                   # generated outputs (ignored)
-├── configs/                   # configuration files
+├── configs/
+├── data/
+├── outputs/
 ├── Dockerfile
 ├── requirements.txt
 ├── .dockerignore
