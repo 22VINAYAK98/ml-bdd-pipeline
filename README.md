@@ -1017,6 +1017,221 @@ python -m src.tests.test_yolo_converter
 
 ---
 
+# Training Outputs and Observations
+
+The detector was trained using:
+
+```text
+500 medium-difficulty training images
+200 epochs
+YOLOv8 medium configuration
+```
+
+The primary objective of this phase was not maximizing benchmark accuracy, but validating:
+
+* curriculum-aware training integration
+* ADAS-oriented evaluation workflow
+* scenario-based benchmarking
+* perception-focused analysis pipeline
+
+while observing how the detector behaves under different driving conditions.
+
+---
+
+# Training Progression
+
+![Training Results](outputs/training/results.png)
+
+## Observation
+
+The training and validation losses continuously reduce across epochs, showing stable convergence during training.
+
+Some important observations:
+
+* box loss gradually decreases, indicating improving localization quality
+* classification loss stabilizes over time
+* mAP50 steadily improves throughout training
+* recall also improves progressively during later epochs
+
+Since the training was performed only on a relatively small subset of medium-difficulty images, the model still has limitations on difficult scenarios, but the training trend shows that the pipeline is learning meaningful object representations.
+
+---
+
+# Precision-Recall Curve
+
+![Precision Recall Curve](outputs/training/BoxPR_curve.png)
+
+## Observation
+
+The detector performs strongly on larger and more frequently occurring vehicle classes such as:
+
+* car
+* truck
+* bus
+
+while traffic-light detection remains comparatively weaker.
+
+This behavior is expected because:
+
+* traffic lights are smaller objects
+* nighttime visibility affects them heavily
+* they occupy fewer pixels in the image
+* the current dataset subset is relatively limited
+
+The overall mAP@0.5 reaching around:
+
+```text
+0.80
+```
+
+is reasonable for the current training scale and subset size.
+
+---
+
+# Precision vs Confidence
+
+![Precision Confidence Curve](outputs/training/BoxP_curve.png)
+
+## Observation
+
+Precision increases steadily as confidence threshold increases.
+
+This indicates:
+
+* higher-confidence predictions are generally reliable
+* the detector becomes more selective at higher confidence levels
+* false positives reduce significantly at stronger confidence thresholds
+
+Vehicle-related classes remain consistently stable across confidence levels compared to smaller infrastructure objects.
+
+---
+
+# Recall vs Confidence
+
+![Recall Confidence Curve](outputs/training/BoxR_curve.png)
+
+## Observation
+
+Recall decreases as confidence threshold increases, which is expected behavior in object detection systems.
+
+The detector is able to retain relatively strong recall for:
+
+* cars
+* trucks
+* buses
+
+while smaller classes such as traffic lights show larger drops.
+
+This again highlights the challenge of detecting:
+
+* small objects
+* distant objects
+* nighttime infrastructure elements
+
+using limited training data.
+
+---
+
+# F1-Confidence Curve
+
+![F1 Confidence Curve](outputs/training/BoxF1_curve.png)
+
+## Observation
+
+The F1 curve helps identify the balance point between precision and recall.
+
+The detector achieves its best overall balance near:
+
+```text
+confidence ≈ 0.45
+```
+
+which suggests that moderate confidence thresholds provide more balanced ADAS perception behavior compared to extremely aggressive filtering.
+
+---
+
+# Confusion Matrix Analysis
+
+![Confusion Matrix](outputs/training/confusion_matrix_normalized.png)
+
+## Observation
+
+The confusion matrix shows stronger classification consistency for:
+
+* car
+* truck
+* bus
+* traffic sign
+
+while traffic lights remain comparatively harder.
+
+Some objects are still being partially missed and mapped to background, especially:
+
+* smaller infrastructure objects
+* low-visibility detections
+* distant scene elements
+
+This behavior aligns with the earlier scenario-based evaluation observations.
+
+---
+
+# Training Batch Visualization
+
+![Training Batch](outputs/training/train_batch0.jpg)
+
+## Observation
+
+The training batches already show strong diversity in:
+
+* daytime scenes
+* nighttime scenes
+* dense traffic
+* highway environments
+* urban environments
+
+This diversity is important because ADAS systems must generalize across highly changing operational conditions instead of learning only simplified driving scenes.
+
+---
+
+# Validation Prediction Visualization
+
+![Validation Predictions](outputs/training/val_batch0_pred.jpg)
+
+## Observation
+
+Validation predictions show that the detector is able to identify:
+
+* vehicles
+* traffic signs
+* traffic lights
+
+across multiple environmental conditions.
+
+Predictions remain stronger for larger nearby vehicles, while distant or low-visibility objects remain comparatively difficult.
+
+This directly matches the curriculum and scenario benchmarking observations discussed earlier.
+
+---
+
+# Validation Ground Truth Visualization
+
+![Validation Ground Truth](outputs/training/val_batch1_labels.jpg)
+
+## Observation
+
+Ground-truth visualization helps understand the actual scene complexity present inside the validation data.
+
+Several frames contain:
+
+* multiple vehicles
+* dense traffic
+* nighttime illumination
+* overlapping objects
+* small traffic infrastructure elements
+
+This further validates why scenario-based and curriculum-based evaluation are important for ADAS perception systems instead of relying only on aggregate benchmark metrics.
+```
+
 ## * Quantitative Analysis 
 
 ## Evaluation Architecture and ADAS-Oriented Benchmarking Strategy
