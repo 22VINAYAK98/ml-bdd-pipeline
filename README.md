@@ -1175,9 +1175,9 @@ This behavior aligns with the earlier scenario-based evaluation observations.
 
 ---
 
-# Training Batch Visualization
+# Training Batch Visualization during training 
 
-![Training Batch](outputs/training/train_batch0.jpg)
+![Training Batch](outputs/training/traiin_batch_0.jpg)
 
 ## Observation
 
@@ -1193,9 +1193,9 @@ This diversity is important because ADAS systems must generalize across highly c
 
 ---
 
-# Validation Prediction Visualization
+# Validation Prediction Visualization during training 
 
-![Validation Predictions](outputs/training/val_batch0_pred.jpg)
+![Validation Predictions](outputs/training/vall_batch0_pred.jpg)
 
 ## Observation
 
@@ -1230,7 +1230,7 @@ Several frames contain:
 * small traffic infrastructure elements
 
 This further validates why scenario-based and curriculum-based evaluation are important for ADAS perception systems instead of relying only on aggregate benchmark metrics.
-```
+
 
 ## * Quantitative Analysis 
 
