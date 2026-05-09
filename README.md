@@ -582,7 +582,7 @@ Night + occlusion + vulnerable road users represent one of the most safety-criti
 
 # Training Pipeline and ADAS-Oriented Model Strategy
 
-# Model Selection Thought Process
+## Model Selection Thought Process
 
 Although multiple object detection models already trained specifically on BDD100K are publicly available, the primary objective of this project was not only maximizing benchmark accuracy, but designing a practical and reproducible ADAS-oriented perception pipeline.
 
@@ -646,7 +646,7 @@ The overall intention was to balance:
 
 ---
 
-# Why Curriculum Learning Was Introduced
+## Why Curriculum Learning Was Introduced
 
 Traditional training pipelines randomly feed all samples to the detector without considering scene difficulty progression.
 
@@ -664,7 +664,7 @@ The main idea is to gradually increase scene complexity during training.
 
 ---
 
-# Curriculum Learning Strategy
+## Curriculum Learning Strategy
 
 The dataset is progressively organized into:
 
@@ -694,7 +694,7 @@ before being exposed to:
 
 ---
 
-# Scene Difficulty Estimation
+## Scene Difficulty Estimation
 
 A dedicated difficulty analyzer was designed to estimate scene complexity.
 
@@ -712,7 +712,7 @@ Each image is scored using multiple perception-oriented factors identified durin
 
 ---
 
-# Difficulty Scoring Pipeline
+## Difficulty Scoring Pipeline
 
 ```text
 Image Record
@@ -730,7 +730,7 @@ Training Pipeline
 
 ---
 
-# Example Difficulty Logic
+## Example Difficulty Logic
 
 Images containing:
 
@@ -746,7 +746,7 @@ This allows the curriculum scheduler to gradually introduce harder perception sc
 
 ---
 
-# ADAS-Oriented Perception Thinking
+## ADAS-Oriented Perception Thinking
 
 The overall pipeline was intentionally designed around autonomous driving perception challenges instead of generic object detection experimentation.
 
@@ -764,7 +764,7 @@ This creates a perception pipeline closer to real-world ADAS development workflo
 
 ---
 
-# Training Pipeline Architecture
+## Training Pipeline Architecture
 
 ```text
 BDD Dataset
@@ -790,7 +790,7 @@ Evaluation
 
 ---
 
-# Why Strategy Pattern Was Used
+## Why Strategy Pattern Was Used
 
 Different object detection frameworks require:
 
@@ -812,7 +812,7 @@ This allows:
 
 ---
 
-# Training Module Structure
+## Training Module Structure
 
 ```text
 src/train/
@@ -996,17 +996,11 @@ The next stage would involve:
 * prediction visualization
 * perception failure analysis
 * VRU-focused evaluation
-* curriculum-stage performance comparison
+* curriculum-stage performance compariso# Evaluation
 
-```
-```
+## 1. Quantitative Analysis 
 
-````markdown
-# Evaluation
-
-# 1. Quantitatie analysis 
-
-# Evaluation Architecture and ADAS-Oriented Benchmarking Strategy
+## Evaluation Architecture and ADAS-Oriented Benchmarking Strategy
 
 Traditional object detection evaluation generally focuses only on aggregate metrics such as:
 
@@ -1040,7 +1034,7 @@ Easy Scenes
 Medium Difficulty Scenes
       ↓
 Hard Perception Scenarios
-````
+```
 
 using the same difficulty analysis pipeline introduced during curriculum learning.
 
@@ -1238,9 +1232,6 @@ Quantitative Metrics
 ADAS-Oriented Perception Insights
 ```
 
-```
-```
-````markdown id="qmfkzt"
 # Evaluation Module Structure
 
 The evaluation pipeline was intentionally designed as a modular and reusable perception evaluation framework instead of a single monolithic validation script.
@@ -1270,7 +1261,7 @@ src/evaluation/
 └── visualizer/
     ├── gt_vs_prediction_visualizer.py
     └── prediction_visualizer.py
-````
+```
 
 ---
 
@@ -1589,11 +1580,8 @@ ml-bdd-pipeline \
 python -m src.tests.test_metrics_visualizer
 ```
 
-```
-```
 
-````markdown id="nqzvwp"
-# Scenario-Based Benchmarking and GT vs Prediction Evaluation
+## Scenario-Based Benchmarking and GT vs Prediction Evaluation
 
 Traditional object detection evaluation generally focuses only on aggregate validation metrics.
 
@@ -1808,8 +1796,7 @@ This scene combines several difficult perception conditions simultaneously such 
 These conditions increase scene complexity and reduce stable visual feature separation between nearby objects.
 
 
-````markdown id="xcmjke"
-# Quantitative Curriculum-Based Evaluation
+## Quantitative Curriculum-Based Evaluation
 
 In addition to qualitative GT vs prediction visualization, quantitative evaluation was also performed across:
 
@@ -1817,7 +1804,7 @@ In addition to qualitative GT vs prediction visualization, quantitative evaluati
 Easy
 Medium
 Hard
-````
+```
 
 curriculum benchmark groups.
 
@@ -1902,10 +1889,6 @@ Even though the detector was trained only on a relatively small subset of approx
 
 the curriculum-based evaluation pipeline is still able to expose meaningful perception behavior differences across varying scene complexity levels.
 
-```
-```
-
-
 ### General Insight
 
 This example demonstrates how detector robustness gradually degrades as perception complexity increases, especially under dense nighttime urban driving conditions.
@@ -1914,13 +1897,13 @@ This example demonstrates how detector robustness gradually degrades as percepti
 
 The current detector was intentionally trained only on a relatively small subset of approximately:
 
-```text id="x11jiv"
+```text
 500 training images
 ````
 
 for roughly:
 
-```text id="h5rmfj"
+```text
 200 epochs
 ```
 
@@ -1935,11 +1918,7 @@ The objective at this stage was mainly to validate:
 
 rather than maximizing final benchmark accuracy.
 
-```
-```
-
-
-# Development Workflow
+```# Development Workflow
 
 ```bash
 git add .
