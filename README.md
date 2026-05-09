@@ -1215,7 +1215,7 @@ This directly matches the curriculum and scenario benchmarking observations disc
 
 # Validation Ground Truth Visualization
 
-![Validation Ground Truth](outputs/training/val_batch1_labels.jpg)
+![Validation Ground Truth](outputs/training/vall_batch0_labels.jpg)
 
 ## Observation
 
