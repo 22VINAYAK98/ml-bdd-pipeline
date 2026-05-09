@@ -1001,7 +1001,942 @@ The next stage would involve:
 ```
 ```
 
+````markdown
+# Evaluation
 
+# 1. Quantitatie analysis 
+
+# Evaluation Architecture and ADAS-Oriented Benchmarking Strategy
+
+Traditional object detection evaluation generally focuses only on aggregate metrics such as:
+
+* overall mAP
+* precision
+* recall
+
+However, ADAS perception systems operate under highly diverse and safety-critical driving conditions where perception difficulty is not uniform across all scenes.
+
+For example:
+
+* a daytime highway scene with few visible objects is comparatively easier
+* a nighttime urban scene with dense traffic and occluded pedestrians is significantly more difficult
+* vulnerable road users under low visibility conditions represent highly safety-critical perception scenarios
+
+Because of this, the evaluation pipeline was intentionally designed from an ADAS perception perspective rather than treating all validation samples equally.
+
+The evaluation architecture was divided into two major perception-oriented benchmarking groups:
+
+---
+
+# 1. Curriculum-Based Evaluation
+
+The first evaluation strategy focuses on scene difficulty progression.
+
+Instead of evaluating the detector only globally, the validation data was grouped into:
+
+```text
+Easy Scenes
+      ↓
+Medium Difficulty Scenes
+      ↓
+Hard Perception Scenarios
+````
+
+using the same difficulty analysis pipeline introduced during curriculum learning.
+
+This allows analyzing how detector performance changes as perception complexity increases.
+
+---
+
+# Why Difficulty-Based Evaluation Was Introduced
+
+ADAS perception difficulty is highly dependent on environmental and object-level complexity.
+
+Scenes become increasingly difficult when they contain:
+
+* nighttime visibility conditions
+* heavy object occlusion
+* vulnerable road users
+* dense traffic
+* smaller distant objects
+
+Because of this, a dedicated difficulty analyzer was designed earlier during the curriculum learning stage.
+
+The same perception-oriented difficulty logic was intentionally reused during evaluation to maintain consistency between:
+
+* training strategy
+* scene understanding
+* evaluation methodology
+
+This creates a much more realistic understanding of detector robustness compared to generic aggregate evaluation.
+
+---
+
+# Easy Scene Evaluation
+
+Easy scenes generally contain:
+
+* better illumination
+* lower traffic density
+* fewer occlusions
+* larger visible objects
+* simpler perception conditions
+
+These scenes help evaluate:
+
+* baseline detector stability
+* initial object representation quality
+* general scene understanding capability
+
+Easy-scene evaluation helps establish the detector’s lower-bound operational performance under relatively favorable conditions.
+
+---
+
+# Medium Difficulty Evaluation
+
+Medium scenes represent moderately complex driving conditions.
+
+These may include:
+
+* moderate traffic density
+* partial occlusion
+* mixed object scales
+* moderately challenging environmental conditions
+
+This stage helps analyze how the detector behaves once scene complexity begins increasing beyond ideal conditions.
+
+Medium-difficulty evaluation acts as an intermediate robustness benchmark between stable and highly challenging perception environments.
+
+---
+
+# Hard Scene Evaluation
+
+Hard scenes intentionally contain highly challenging perception conditions such as:
+
+* nighttime driving
+* dense urban traffic
+* vulnerable road users
+* heavy occlusion
+* smaller distant objects
+* cluttered scene structure
+
+These scenarios are significantly more important from an ADAS safety perspective because perception failures under these conditions may directly impact downstream planning and decision-making systems.
+
+Hard-scene evaluation therefore helps analyze:
+
+* perception degradation
+* localization instability
+* missed detections
+* safety-critical perception failures
+
+rather than only measuring average benchmark accuracy.
+
+---
+
+# Difficulty Evaluation Pipeline
+
+```text
+Validation Dataset
+        ↓
+Difficulty Analyzer
+        ↓
+Difficulty Score Generation
+        ↓
+Easy / Medium / Hard Classification
+        ↓
+Curriculum Benchmark Evaluation
+        ↓
+Quantitative + Qualitative Analysis
+```
+
+---
+
+# 2. Scenario-Based Evaluation
+
+The second evaluation strategy focuses on operational driving scenarios.
+
+Instead of grouping scenes only by numerical difficulty score, evaluation was also organized around specific perception conditions commonly observed in autonomous driving systems.
+
+This helps analyze detector robustness under targeted environmental and safety-critical operational conditions.
+
+---
+
+# Why Scenario-Based Evaluation Was Introduced
+
+ADAS systems are expected to remain robust across multiple operational domains and environmental conditions.
+
+However, aggregate metrics alone often fail to explain:
+
+* where the detector struggles
+* which perception conditions are difficult
+* which object categories degrade under specific environments
+* how illumination and occlusion affect safety-critical objects
+
+Because of this, the validation data was further grouped into scenario-oriented benchmark subsets.
+
+This allows targeted analysis of perception behavior under realistic driving conditions.
+
+---
+
+# Implemented Scenario Benchmarks
+
+The following benchmark categories were introduced:
+
+| Scenario Category    | Purpose                                                         |
+| -------------------- | --------------------------------------------------------------- |
+| Day + VRU            | Evaluate vulnerable road user detection under good illumination |
+| Night + VRU          | Analyze nighttime VRU visibility robustness                     |
+| Day + Non-VRU        | Baseline daytime object perception                              |
+| Night + Non-VRU      | Evaluate illumination impact independent of VRUs                |
+| Day + Occluded       | Analyze daytime occlusion handling                              |
+| Night + Occluded     | Evaluate combined illumination + occlusion difficulty           |
+| Day + Non-Occluded   | Stable baseline perception comparison                           |
+| Night + Non-Occluded | Isolate nighttime illumination impact                           |
+| Day + Occluded VRU   | Safety-critical daytime VRU visibility                          |
+| Night + Occluded VRU | Highly challenging ADAS perception scenario                     |
+| Dense Traffic Scenes | Analyze cluttered scene perception behavior                     |
+
+---
+
+# ADAS Significance of Scenario-Based Evaluation
+
+This evaluation structure allows the perception system to be analyzed beyond generic accuracy metrics.
+
+For example:
+
+* reduced recall in nighttime VRU scenarios may indicate illumination-sensitive perception behavior
+* failures in occluded VRU scenes may indicate partial visibility limitations
+* localization instability in dense traffic scenes may reveal perception clutter challenges
+* degraded performance on small distant objects may indicate long-range perception limitations
+
+This creates a much more realistic perception evaluation pipeline aligned with real-world autonomous driving challenges.
+
+---
+
+# Overall Evaluation Architecture
+
+```text
+Validation Dataset
+        ↓
+Benchmark Selection
+        ↓
+├── Curriculum-Based Evaluation
+│       ├── Easy
+│       ├── Medium
+│       └── Hard
+│
+└── Scenario-Based Evaluation
+        ├── VRU-Based
+        ├── Occlusion-Based
+        ├── Illumination-Based
+        └── Dense Scene Analysis
+                ↓
+GT vs Prediction Visualization
+                ↓
+Quantitative Metrics
+                ↓
+ADAS-Oriented Perception Insights
+```
+
+```
+```
+````markdown id="qmfkzt"
+# Evaluation Module Structure
+
+The evaluation pipeline was intentionally designed as a modular and reusable perception evaluation framework instead of a single monolithic validation script.
+
+The primary objective was to separate:
+
+* benchmark generation
+* quantitative evaluation
+* qualitative visualization
+* perception-oriented analysis
+
+so that new evaluation strategies and perception experiments can later be added independently without modifying the core pipeline.
+
+---
+
+# Evaluation Architecture
+
+```text
+src/evaluation/
+├── benchmark/
+│   ├── curriculum_benchmark.py
+│   └── scene_benchmark.py
+│
+├── metrics/
+│   └── quantitative_evaluator.py
+│
+└── visualizer/
+    ├── gt_vs_prediction_visualizer.py
+    └── prediction_visualizer.py
+````
+
+---
+
+# Benchmark Layer
+
+The benchmark layer is responsible for generating evaluation subsets from the validation dataset.
+
+Instead of evaluating the detector globally on the complete dataset, the validation data is grouped into perception-oriented benchmark categories.
+
+This allows targeted analysis of:
+
+* perception difficulty
+* environmental robustness
+* VRU visibility
+* illumination impact
+* occlusion handling
+* dense traffic perception behavior
+
+---
+
+# `curriculum_benchmark.py`
+
+Responsible for curriculum-aware evaluation grouping.
+
+This module reuses the same difficulty analysis logic introduced during curriculum learning.
+
+The benchmark groups validation data into:
+
+```text
+Easy
+Medium
+Hard
+```
+
+based on:
+
+* nighttime visibility
+* occlusion
+* vulnerable road users
+* scene density
+* small object presence
+
+This allows analyzing how detector robustness changes as perception complexity increases.
+
+The objective was to validate whether the curriculum-based training philosophy aligns with actual detector behavior during evaluation.
+
+---
+
+# `scene_benchmark.py`
+
+Responsible for scenario-aware benchmark generation.
+
+Instead of grouping scenes only by numerical difficulty, this module creates operational driving condition subsets commonly observed in autonomous driving systems.
+
+Implemented benchmark categories include:
+
+* day + VRU
+* night + VRU
+* day + non-VRU
+* night + non-VRU
+* day + occluded
+* night + occluded
+* day + non-occluded
+* night + non-occluded
+* day + occluded VRU
+* night + occluded VRU
+* dense traffic scenes
+
+This helps isolate specific perception challenges and enables targeted robustness analysis.
+
+---
+
+# Metrics Layer
+
+The metrics layer is responsible for quantitative evaluation.
+
+This stage focuses on computing:
+
+* precision
+* recall
+* mAP50
+* mAP50-95
+
+for both:
+
+* curriculum-based subsets
+* scenario-based subsets
+
+instead of relying only on global dataset-level metrics.
+
+---
+
+# `quantitative_evaluator.py`
+
+Responsible for running quantitative evaluation on benchmark subsets.
+
+Main responsibilities:
+
+* converting selected benchmark records into temporary YOLO-compatible evaluation datasets
+* invoking Ultralytics validation pipeline
+* extracting quantitative metrics
+* saving evaluation metrics for later visualization
+
+The evaluator intentionally reuses the benchmark layer so that the same evaluation logic can be applied consistently across all scenario groups.
+
+---
+
+# Visualization Layer
+
+The visualization layer is responsible for qualitative perception analysis.
+
+Instead of analyzing only numerical metrics, the evaluation pipeline also supports visual comparison between:
+
+* ground truth annotations
+* detector predictions
+
+This helps identify:
+
+* missed detections
+* localization instability
+* false positives
+* VRU perception failures
+* illumination-related degradation
+* dense-scene perception limitations
+
+---
+
+# `prediction_visualizer.py`
+
+Responsible for generating detector prediction visualizations.
+
+This module overlays predicted bounding boxes directly on validation images.
+
+The primary purpose is to quickly inspect detector behavior visually during experimentation and debugging.
+
+---
+
+# `gt_vs_prediction_visualizer.py`
+
+Responsible for comparative qualitative evaluation between:
+
+* ground truth annotations
+* predicted detections
+
+Visualization convention:
+
+* green boxes → ground truth
+* red boxes → model predictions
+
+This module was intentionally introduced because prediction-only visualization often hides:
+
+* missed detections
+* partial localization failures
+* safety-critical perception errors
+
+The visualizer also supports scenario-aware output organization such as:
+
+```text
+outputs/gt_vs_prediction/
+├── easy/
+├── hard/
+├── night_vru/
+├── night_occluded_vru/
+└── dense_scenes/
+```
+
+This enables structured qualitative analysis across multiple perception conditions.
+
+---
+
+# Evaluation Sanity Tests
+
+Lightweight modular sanity tests were added for validating each evaluation layer independently.
+
+This helps simplify:
+
+* debugging
+* architecture verification
+* benchmark validation
+* visualization testing
+
+without requiring full end-to-end retraining.
+
+---
+
+# Evaluation Test Responsibilities
+
+## `test_scene_benchmark.py`
+
+Validates scenario-aware benchmark grouping.
+
+Checks:
+
+* scenario filtering
+* subset generation
+* benchmark summary counts
+
+---
+
+## `test_curriculum_based_gt_vs_prediction_visualizer.py`
+
+Generates curriculum-aware GT vs prediction visualizations for:
+
+* easy scenes
+* medium scenes
+* hard scenes
+
+This helps visually analyze perception degradation as scene complexity increases.
+
+---
+
+## `test_scene_based_gt_vs_prediction_visualizer.py`
+
+Generates scenario-aware GT vs prediction visualizations.
+
+Supports evaluation for scenarios such as:
+
+* night + VRU
+* day + occluded
+* night + occluded VRU
+* dense scenes
+
+This helps isolate operational-condition-specific perception behavior.
+
+---
+
+## `test_quantitative_curriculum_evaluator.py`
+
+Runs quantitative evaluation for:
+
+* easy
+* medium
+* hard
+
+benchmark groups.
+
+The generated metrics are later used for curriculum-based metric comparison plots.
+
+---
+
+## `test_metrics_visualizer.py`
+
+Responsible for plotting quantitative evaluation comparisons.
+
+Currently supports:
+
+* curriculum difficulty vs mAP50
+* curriculum difficulty vs recall
+
+Generated plots are stored under:
+
+```text
+outputs/evaluation/plots/
+```
+
+These plots help visually analyze detector robustness degradation as scene complexity increases.
+
+---
+
+# Evaluation Sanity Test Commands
+
+## Scenario Benchmark Validation
+
+```bash
+docker run --rm \
+-v $(pwd)/data:/app/data \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_scene_benchmark
+```
+
+---
+
+## Curriculum GT vs Prediction Visualization
+
+```bash
+docker run --rm \
+-v $(pwd)/data:/app/data \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_curriculum_based_gt_vs_prediction_visualizer
+```
+
+---
+
+## Scenario-Based GT vs Prediction Visualization
+
+```bash
+docker run --rm \
+-v $(pwd)/data:/app/data \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_scene_based_gt_vs_prediction_visualizer
+```
+
+---
+
+## Quantitative Curriculum Evaluation
+
+```bash
+docker run --rm \
+-v $(pwd)/data:/app/data \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_quantitative_curriculum_evaluator
+```
+
+---
+
+## Metrics Visualization
+
+```bash
+docker run --rm \
+-v $(pwd)/outputs:/app/outputs \
+ml-bdd-pipeline \
+python -m src.tests.test_metrics_visualizer
+```
+
+```
+```
+
+````markdown id="nqzvwp"
+# Scenario-Based Benchmarking and GT vs Prediction Evaluation
+
+Traditional object detection evaluation generally focuses only on aggregate validation metrics.
+
+However, ADAS perception systems must remain robust under multiple operational driving conditions where perception complexity changes significantly depending on:
+
+* illumination
+* occlusion
+* traffic density
+* vulnerable road user visibility
+* environmental structure
+
+Because of this, the evaluation pipeline was intentionally extended toward scenario-aware benchmarking.
+
+Instead of evaluating only global detector performance, the validation dataset was grouped into targeted operational perception scenarios.
+
+This allows analyzing how the detector behaves under realistic autonomous driving conditions rather than relying only on average benchmark metrics.
+
+---
+
+# GT vs Prediction Visualization Strategy
+
+A dedicated qualitative evaluation pipeline was introduced for comparing:
+
+* ground truth annotations
+* model predictions
+
+Visualization convention:
+
+* green bounding boxes → ground truth
+* red bounding boxes → detector predictions
+
+The primary objective of this visualization pipeline is to expose:
+
+* missed detections
+* localization mismatch
+* low-confidence predictions
+* illumination-related degradation
+* difficult perception conditions
+
+instead of observing predictions alone.
+
+---
+
+# Implemented Scenario Benchmark Categories
+
+The evaluation pipeline currently supports scenario-based benchmarking for:
+
+* day + VRU
+* night + VRU
+* day + non-VRU
+* night + non-VRU
+* day + occluded
+* night + occluded
+* day + non-occluded
+* night + non-occluded
+* day + occluded VRU
+* night + occluded VRU
+* dense traffic scenes
+
+The same evaluation framework can be reused for all scenario categories simply by selecting different benchmark subsets from the scenario benchmark layer.
+
+---
+
+# Example Scenario:
+# Night + VRU + Occlusion Benchmark
+
+The following examples demonstrate detector behavior under nighttime urban driving conditions containing:
+
+* low illumination
+* vulnerable road users
+* partial visibility
+* cluttered scene structure
+
+These represent difficult perception scenarios for ADAS systems.
+
+---
+
+# Scenario Example 1
+
+![Night VRU Scenario 1](outputs/gt_vs_prediction/night_occluded_vru/night_occluded_vru_b1ceb32e-3f481b43.jpg)
+
+### Observation
+
+The detector is able to identify most nearby vehicles reasonably well even under low-light conditions.
+
+Larger objects closer to the ego vehicle are detected more consistently, while smaller and distant vehicles become comparatively harder to localize accurately.
+
+### Possible Cause
+
+This scene contains multiple difficult perception conditions simultaneously:
+
+* nighttime illumination
+* darker object regions
+* distant objects
+* partially visible vehicles
+
+These conditions reduce visible object detail and make feature extraction more difficult.
+
+### General Insight
+
+This example shows how nighttime scenes increase perception difficulty, especially for smaller and farther traffic participants.
+
+---
+
+# Scenario Example 2
+
+![Night VRU Scenario 2](outputs/gt_vs_prediction/night_occluded_vru/night_occluded_vru_b20234fd-822029be.jpg)
+
+### Observation
+
+The detector is able to detect several important traffic participants including:
+
+* cars
+* buses
+* traffic lights
+* pedestrians
+
+However, confidence variation and slight localization mismatch can still be observed in darker and cluttered regions.
+
+A false-positive traffic sign prediction is also visible in the scene.
+
+### Possible Cause
+
+The scene contains:
+
+* strong headlight glare
+* nighttime illumination
+* object scale variation
+* crowded urban structure
+
+These conditions create inconsistent visual patterns and increase perception complexity.
+
+### General Insight
+
+Nighttime urban scenes with mixed object categories remain significantly more challenging compared to regular daytime driving conditions.
+
+---
+
+# Easy Benchmark Example
+
+![Easy Benchmark Example](outputs/gt_vs_prediction/easy/easy_b4d18d1a-6007c930.jpg)
+
+### Observation
+
+The detector is able to localize most vehicles accurately with strong overlap between ground truth and predicted bounding boxes.
+
+Prediction confidence also remains comparatively stable across nearby visible vehicles.
+
+### Possible Cause
+
+This scene contains relatively simpler perception conditions such as:
+
+* daytime illumination
+* lower traffic density
+* larger visible objects
+* minimal occlusion
+
+These conditions provide clearer visual features and more stable object visibility.
+
+### General Insight
+
+This example shows that the detector performs more consistently under comparatively easier driving conditions where object visibility and scene structure remain stable.
+
+
+# Medium Benchmark Example
+
+![Medium Benchmark Example](outputs/gt_vs_prediction/medium/medium_b1d7b3ac-5744370e.jpg)
+
+### Observation
+
+The detector is able to identify the major nearby vehicles correctly while maintaining reasonably stable localization overlap with ground truth annotations.
+
+However, smaller and more distant objects begin showing comparatively weaker localization consistency compared to easier scenes.
+
+### Possible Cause
+
+This scene contains moderately challenging perception conditions such as:
+
+* mixed object scales
+* brighter illumination regions
+* partially distant objects
+* moderate scene complexity
+
+These conditions increase perception variability compared to simpler benchmark scenes.
+
+### General Insight
+
+This example demonstrates how detector behavior gradually becomes less stable as scene complexity increases beyond ideal perception conditions.
+
+# Hard Benchmark Example
+
+![Hard Benchmark Example](outputs/gt_vs_prediction/hard/hard_b1ca2e5d-84cf9134.jpg)
+
+### Observation
+
+The detector is still able to identify several major traffic participants, including vehicles, pedestrians, traffic lights, and traffic signs.
+
+However, localization mismatch, overlapping predictions, and confidence variation become noticeably higher compared to easy and medium benchmark scenes.
+
+Smaller and distant objects also become comparatively more difficult to localize consistently.
+
+### Possible Cause
+
+This scene combines several difficult perception conditions simultaneously such as:
+
+* nighttime illumination
+* dense urban traffic
+* multiple nearby objects
+* smaller distant traffic participants
+* cluttered scene structure
+
+These conditions increase scene complexity and reduce stable visual feature separation between nearby objects.
+
+
+````markdown id="xcmjke"
+# Quantitative Curriculum-Based Evaluation
+
+In addition to qualitative GT vs prediction visualization, quantitative evaluation was also performed across:
+
+```text
+Easy
+Medium
+Hard
+````
+
+curriculum benchmark groups.
+
+The objective was to analyze how detector performance changes as perception complexity increases.
+
+The following metrics were evaluated:
+
+* mAP50
+* Recall
+
+These metrics help analyze both:
+
+* localization quality
+* object retrieval capability
+
+under progressively difficult driving conditions.
+
+---
+
+# Curriculum Difficulty vs mAP50
+
+![Curriculum Difficulty vs mAP50](outputs/evaluation/plots/curriculum_map50.png)
+
+### Observation
+
+The detector performs relatively consistently across easy and medium benchmark groups.
+
+However, performance drops noticeably for hard benchmark scenes.
+
+### General Insight
+
+This trend indicates that the detector is able to maintain comparatively stable localization performance under simpler and moderately complex driving conditions.
+
+However, harder scenes containing nighttime illumination, denser traffic, smaller objects, and cluttered environments introduce significantly higher perception complexity.
+
+This directly affects localization quality and overall detection stability.
+
+---
+
+# Curriculum Difficulty vs Recall
+
+![Curriculum Difficulty vs Recall](outputs/evaluation/plots/curriculum_recall.png)
+
+### Observation
+
+Recall remains comparatively stable between easy and medium benchmark groups but drops significantly for hard scenes.
+
+### General Insight
+
+This indicates that the detector begins missing more objects as scene complexity increases.
+
+Hard benchmark conditions such as:
+
+* nighttime driving
+* dense urban traffic
+* smaller distant objects
+* cluttered scene structure
+
+make consistent object retrieval more difficult compared to easier perception conditions.
+
+The trend also aligns with the qualitative observations seen earlier during GT vs prediction visualization.
+
+---
+
+# Overall Quantitative Insight
+
+The quantitative results show a clear relationship between:
+
+```text
+scene difficulty
+        ↓
+perception robustness
+```
+
+As scene complexity increases, both localization quality and object retrieval capability begin degrading.
+
+Even though the detector was trained only on a relatively small subset of approximately:
+
+```text
+500 images
+```
+
+the curriculum-based evaluation pipeline is still able to expose meaningful perception behavior differences across varying scene complexity levels.
+
+```
+```
+
+
+### General Insight
+
+This example demonstrates how detector robustness gradually degrades as perception complexity increases, especially under dense nighttime urban driving conditions.
+
+# Important Experimental Note
+
+The current detector was intentionally trained only on a relatively small subset of approximately:
+
+```text id="x11jiv"
+500 training images
+````
+
+for roughly:
+
+```text id="h5rmfj"
+200 epochs
+```
+
+primarily using medium-difficulty curriculum samples.
+
+The objective at this stage was mainly to validate:
+
+* modular pipeline architecture
+* curriculum-aware training integration
+* scenario-based evaluation workflow
+* reusable ADAS-oriented benchmarking pipeline
+
+rather than maximizing final benchmark accuracy.
+
+```
+```
 
 
 # Development Workflow

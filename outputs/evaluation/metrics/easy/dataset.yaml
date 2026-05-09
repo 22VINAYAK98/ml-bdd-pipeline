@@ -1,0 +1,14 @@
+path: outputs/evaluation/metrics/easy
+train: images
+val: images
+names:
+- pedestrian
+- rider
+- car
+- truck
+- bus
+- train
+- motorcycle
+- bicycle
+- traffic light
+- traffic sign

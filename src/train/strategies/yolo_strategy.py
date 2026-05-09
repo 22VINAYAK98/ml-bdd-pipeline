@@ -76,13 +76,13 @@ class YOLOTrainingStrategy(
                 f"/dataset.yaml"
             ),
 
-            epochs=1,
+            epochs=200,
 
             imgsz=640,
 
             batch=4,
 
-            project="outputs",
+            project="/app/outputs",
 
             name="yolo_training",
         )

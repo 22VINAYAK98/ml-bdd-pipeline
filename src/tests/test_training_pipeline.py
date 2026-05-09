@@ -28,12 +28,12 @@ def main():
     )
 
     pipeline = TrainingPipeline(
-        dataset.records[:100], # temporarily restricting dataset to only 100 samples  
+        dataset.records[:500], # temporarily restricting dataset to only 100 samples  
         strategy,
     )
 
     pipeline.run(
-        curriculum_stage="easy"
+        curriculum_stage="medium"
     )
 
 

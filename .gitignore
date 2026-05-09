@@ -1,5 +1,9 @@
 /data/
 /outputs/yolo_dataset/
+outputs/yolo_training*
+outputs/**/weights/
+outputs/**/train_batch*
+outputs/**/val_batch*
 __pycache__/
 *.pyc
 *.pt
