@@ -6,7 +6,6 @@ visualization utilities.
 import os
 
 import cv2
-
 from ultralytics import YOLO
 
 
@@ -22,9 +21,7 @@ class GTVsPredictionVisualizer:
         output_dir,
     ):
 
-        self.model = YOLO(
-            model_path
-        )
+        self.model = YOLO(model_path)
 
         self.output_dir = output_dir
 
@@ -46,9 +43,7 @@ class GTVsPredictionVisualizer:
         for record in records:
 
             self._visualize_record(
-
                 record,
-
                 scenario_name,
             )
 
@@ -61,16 +56,11 @@ class GTVsPredictionVisualizer:
         Generate comparison image.
         """
 
-        image = cv2.imread(
-            record.image_path
-        )
+        image = cv2.imread(record.image_path)
 
         results = self.model.predict(
-
             source=record.image_path,
-
             conf=0.25,
-
             verbose=False,
         )
 
@@ -80,9 +70,7 @@ class GTVsPredictionVisualizer:
         # Draw Ground Truth
         # ----------------------------------
 
-        for annotation in (
-            record.annotations
-        ):
+        for annotation in record.annotations:
 
             bbox = annotation.bbox
 
@@ -92,37 +80,23 @@ class GTVsPredictionVisualizer:
             x2 = int(bbox.x2)
             y2 = int(bbox.y2)
 
-            category = (
-                annotation.category
-            )
+            category = annotation.category
 
             cv2.rectangle(
-
                 image,
-
                 (x1, y1),
-
                 (x2, y2),
-
                 (0, 255, 0),
-
                 2,
             )
 
             cv2.putText(
-
                 image,
-
                 f"GT: {category}",
-
                 (x1, y1 - 10),
-
                 cv2.FONT_HERSHEY_SIMPLEX,
-
                 0.5,
-
                 (0, 255, 0),
-
                 2,
             )
 
@@ -132,58 +106,32 @@ class GTVsPredictionVisualizer:
 
         for box in result.boxes:
 
-            x1, y1, x2, y2 = (
-                box.xyxy[0]
-                .cpu()
-                .numpy()
-            )
+            x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
 
-            class_id = int(
-                box.cls[0]
-            )
+            class_id = int(box.cls[0])
 
-            confidence = float(
-                box.conf[0]
-            )
+            confidence = float(box.conf[0])
 
-            class_name = (
-                result.names[class_id]
-            )
+            class_name = result.names[class_id]
 
             cv2.rectangle(
-
                 image,
-
                 (int(x1), int(y1)),
-
                 (int(x2), int(y2)),
-
                 (0, 0, 255),
-
                 2,
             )
 
             cv2.putText(
-
                 image,
-
-                (
-                    f"PRED: "
-                    f"{class_name} "
-                    f"{confidence:.2f}"
-                ),
-
+                (f"PRED: " f"{class_name} " f"{confidence:.2f}"),
                 (
                     int(x1),
                     int(y1) - 10,
                 ),
-
                 cv2.FONT_HERSHEY_SIMPLEX,
-
                 0.5,
-
                 (0, 0, 255),
-
                 2,
             )
 
@@ -192,29 +140,19 @@ class GTVsPredictionVisualizer:
         # ----------------------------------
 
         scenario_dir = os.path.join(
-
             self.output_dir,
-
             scenario_name,
         )
 
         os.makedirs(
-
             scenario_dir,
-
             exist_ok=True,
         )
 
-        output_filename = (
-
-            f"{scenario_name}_"
-            f"{record.image_name}"
-        )
+        output_filename = f"{scenario_name}_" f"{record.image_name}"
 
         output_path = os.path.join(
-
             scenario_dir,
-
             output_filename,
         )
 
@@ -223,6 +161,4 @@ class GTVsPredictionVisualizer:
             image,
         )
 
-        print(
-            f"Saved: {output_path}"
-        )
+        print(f"Saved: {output_path}")

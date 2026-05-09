@@ -3,8 +3,7 @@ Base interface for all
 training strategies.
 """
 
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
 class BaseTrainingStrategy(ABC):

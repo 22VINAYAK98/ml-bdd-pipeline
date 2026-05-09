@@ -14,19 +14,11 @@ class EnvironmentalVisualization:
 
     def plot_weather_distribution(self):
 
-        distribution = (
-            self.analysis_results[
-                "weather_distribution"
-            ]
-        )
+        distribution = self.analysis_results["weather_distribution"]
 
-        labels = list(
-            distribution.keys()
-        )
+        labels = list(distribution.keys())
 
-        values = list(
-            distribution.values()
-        )
+        values = list(distribution.values())
 
         plt.figure(figsize=(10, 6))
 
@@ -36,33 +28,21 @@ class EnvironmentalVisualization:
 
         plt.ylabel("Image Count")
 
-        plt.title(
-            "Weather Distribution"
-        )
+        plt.title("Weather Distribution")
 
         plt.tight_layout()
 
-        plt.savefig(
-            "outputs/weather_distribution.png"
-        )
+        plt.savefig("outputs/weather_distribution.png")
 
         plt.close()
 
     def plot_scene_distribution(self):
 
-        distribution = (
-            self.analysis_results[
-                "scene_distribution"
-            ]
-        )
+        distribution = self.analysis_results["scene_distribution"]
 
-        labels = list(
-            distribution.keys()
-        )
+        labels = list(distribution.keys())
 
-        values = list(
-            distribution.values()
-        )
+        values = list(distribution.values())
 
         plt.figure(figsize=(10, 6))
 
@@ -72,35 +52,23 @@ class EnvironmentalVisualization:
 
         plt.ylabel("Image Count")
 
-        plt.title(
-            "Scene Distribution"
-        )
+        plt.title("Scene Distribution")
 
         plt.xticks(rotation=20)
 
         plt.tight_layout()
 
-        plt.savefig(
-            "outputs/scene_distribution.png"
-        )
+        plt.savefig("outputs/scene_distribution.png")
 
         plt.close()
 
     def plot_timeofday_distribution(self):
 
-        distribution = (
-            self.analysis_results[
-                "timeofday_distribution"
-            ]
-        )
+        distribution = self.analysis_results["timeofday_distribution"]
 
-        labels = list(
-            distribution.keys()
-        )
+        labels = list(distribution.keys())
 
-        values = list(
-            distribution.values()
-        )
+        values = list(distribution.values())
 
         plt.figure(figsize=(6, 6))
 
@@ -110,13 +78,9 @@ class EnvironmentalVisualization:
             autopct="%1.1f%%",
         )
 
-        plt.title(
-            "Time Of Day Distribution"
-        )
+        plt.title("Time Of Day Distribution")
 
-        plt.savefig(
-            "outputs/timeofday_distribution.png"
-        )
+        plt.savefig("outputs/timeofday_distribution.png")
 
         plt.close()
 

@@ -3,15 +3,11 @@ BDD100K dataset parser utilities.
 """
 
 import json
-from PIL import Image
 from pathlib import Path
 
-from .entities import (
-    BoundingBox,
-    Annotation,
-    ImageRecord,
-)
+from PIL import Image
 
+from .entities import Annotation, BoundingBox, ImageRecord
 from .filters import is_valid_detection
 
 
@@ -45,13 +41,11 @@ class BDDParser:
 
         return Annotation(
             label_id=label.get("id", -1),
-
             category=label["category"],
             bbox=bbox,
-
             occluded=attributes.get("occluded", False),
             truncated=attributes.get("truncated", False),
-            )
+        )
 
     def parse_image_record(self, item: dict) -> ImageRecord:
 
@@ -78,33 +72,25 @@ class BDDParser:
 
         return ImageRecord(
             image_name=image_name,
-
             image_path=image_path,
-
             image_width=image_width,
-
             image_height=image_height,
-
             weather=attributes.get(
                 "weather",
                 "unknown",
             ),
-
             scene=attributes.get(
                 "scene",
                 "unknown",
             ),
-
             timeofday=attributes.get(
                 "timeofday",
                 "unknown",
             ),
-
             timestamp=item.get(
                 "timestamp",
                 -1,
             ),
-
             annotations=annotations,
         )
 

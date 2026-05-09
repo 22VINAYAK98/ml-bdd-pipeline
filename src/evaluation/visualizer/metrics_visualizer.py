@@ -21,18 +21,12 @@ class MetricsVisualizer:
         output_dir,
     ):
 
-        self.metrics_dir = (
-            metrics_dir
-        )
+        self.metrics_dir = metrics_dir
 
-        self.output_dir = (
-            output_dir
-        )
+        self.output_dir = output_dir
 
         os.makedirs(
-
             self.output_dir,
-
             exist_ok=True,
         )
 
@@ -46,24 +40,17 @@ class MetricsVisualizer:
     ):
 
         file_path = os.path.join(
-
             self.metrics_dir,
-
             filename,
         )
 
         with open(
-
             file_path,
-
             "r",
-
             encoding="utf-8",
         ) as file:
 
-            return json.load(
-                file
-            )
+            return json.load(file)
 
     # ----------------------------------
     # Curriculum Visualization
@@ -77,23 +64,11 @@ class MetricsVisualizer:
         vs Hard metrics.
         """
 
-        easy_metrics = (
-            self._load_metric_file(
-                "easy_metrics.json"
-            )
-        )
+        easy_metrics = self._load_metric_file("easy_metrics.json")
 
-        medium_metrics = (
-            self._load_metric_file(
-                "medium_metrics.json"
-            )
-        )
+        medium_metrics = self._load_metric_file("medium_metrics.json")
 
-        hard_metrics = (
-            self._load_metric_file(
-                "hard_metrics.json"
-            )
-        )
+        hard_metrics = self._load_metric_file("hard_metrics.json")
 
         categories = [
             "Easy",
@@ -106,11 +81,8 @@ class MetricsVisualizer:
         # ----------------------------------
 
         map50_values = [
-
             easy_metrics["mAP50"],
-
             medium_metrics["mAP50"],
-
             hard_metrics["mAP50"],
         ]
 
@@ -121,27 +93,14 @@ class MetricsVisualizer:
             map50_values,
         )
 
-        plt.ylabel(
-            "mAP50"
-        )
+        plt.ylabel("mAP50")
 
-        plt.title(
-            (
-                "Curriculum Difficulty "
-                "vs mAP50"
-            )
-        )
+        plt.title(("Curriculum Difficulty " "vs mAP50"))
 
         plt.savefig(
-
             os.path.join(
-
                 self.output_dir,
-
-                (
-                    "curriculum_"
-                    "map50.png"
-                ),
+                ("curriculum_" "map50.png"),
             )
         )
 
@@ -152,11 +111,8 @@ class MetricsVisualizer:
         # ----------------------------------
 
         recall_values = [
-
             easy_metrics["recall"],
-
             medium_metrics["recall"],
-
             hard_metrics["recall"],
         ]
 
@@ -167,33 +123,17 @@ class MetricsVisualizer:
             recall_values,
         )
 
-        plt.ylabel(
-            "Recall"
-        )
+        plt.ylabel("Recall")
 
-        plt.title(
-            (
-                "Curriculum Difficulty "
-                "vs Recall"
-            )
-        )
+        plt.title(("Curriculum Difficulty " "vs Recall"))
 
         plt.savefig(
-
             os.path.join(
-
                 self.output_dir,
-
-                (
-                    "curriculum_"
-                    "recall.png"
-                ),
+                ("curriculum_" "recall.png"),
             )
         )
 
         plt.close()
 
-        print(
-            "Saved curriculum "
-            "metric plots."
-        )
+        print("Saved curriculum " "metric plots.")

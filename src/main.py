@@ -4,16 +4,14 @@ Main entry point for BDD100K pipeline.
 
 import cv2
 
-from src.data.utils import draw_annotations
-
 from src.data.loader import BDDDatasetLoader
+from src.data.utils import draw_annotations
 
 
 def main():
 
     dataset = BDDDatasetLoader(
         image_dir="/app/data/raw/assignment_data_bdd/bdd100k_images_100k/bdd100k/images/100k/train",
-
         annotation_file="/app/data/raw/assignment_data_bdd/bdd100k_labels_release/bdd100k/labels/bdd100k_labels_images_train.json",
     )
     print(type(dataset.records))

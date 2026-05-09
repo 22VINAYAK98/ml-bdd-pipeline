@@ -1,4 +1,3 @@
-
 """
 Curriculum scheduling utilities.
 
@@ -8,9 +7,7 @@ samples based on perception difficulty.
 
 from collections import defaultdict
 
-from src.train.curriculum.difficulty_analyzer import (
-    DifficultyAnalyzer,
-)
+from src.train.curriculum.difficulty_analyzer import DifficultyAnalyzer
 
 
 class CurriculumScheduler:
@@ -23,9 +20,7 @@ class CurriculumScheduler:
 
         self.records = records
 
-        self.analyzer = (
-            DifficultyAnalyzer()
-        )
+        self.analyzer = DifficultyAnalyzer()
 
     def build_curriculum(self):
         """
@@ -43,31 +38,15 @@ class CurriculumScheduler:
 
         for record in self.records:
 
-            result = (
-                self.analyzer.analyze(
-                    record
-                )
-            )
+            result = self.analyzer.analyze(record)
 
-            difficulty_level = (
-                result[
-                    "difficulty_level"
-                ]
-            )
+            difficulty_level = result["difficulty_level"]
 
-            curriculum[
-                difficulty_level
-            ].append(
+            curriculum[difficulty_level].append(
                 {
                     "record": record,
-                    "difficulty_score":
-                        result[
-                            "difficulty_score"
-                        ],
-                    "difficulty_breakdown":
-                        result[
-                            "difficulty_breakdown"
-                        ],
+                    "difficulty_score": result["difficulty_score"],
+                    "difficulty_breakdown": result["difficulty_breakdown"],
                 }
             )
 

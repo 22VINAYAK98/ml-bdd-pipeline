@@ -1,5 +1,5 @@
 """
- In ADAS Context : Environmental analysis or data which recodrs environment plays very importatnt role 
+ In ADAS Context : Environmental analysis or data which recodrs environment plays very importatnt role
  Environmental analysis utilities for BDD100K dataset.
 
 Focus areas:
@@ -50,12 +50,7 @@ class EnvironmentalAnalyzer:
     def run(self):
 
         return {
-            "weather_distribution":
-                self.analyze_weather_distribution(),
-
-            "scene_distribution":
-                self.analyze_scene_distribution(),
-
-            "timeofday_distribution":
-                self.analyze_timeofday_distribution(),
+            "weather_distribution": self.analyze_weather_distribution(),
+            "scene_distribution": self.analyze_scene_distribution(),
+            "timeofday_distribution": self.analyze_timeofday_distribution(),
         }

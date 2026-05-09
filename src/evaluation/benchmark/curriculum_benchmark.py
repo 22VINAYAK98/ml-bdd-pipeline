@@ -4,9 +4,7 @@ utilities for ADAS perception
 evaluation.
 """
 
-from src.train.curriculum.difficulty_analyzer import (
-    DifficultyAnalyzer,
-)
+from src.train.curriculum.difficulty_analyzer import DifficultyAnalyzer
 
 
 class CurriculumBenchmark:
@@ -22,9 +20,7 @@ class CurriculumBenchmark:
 
         self.records = records
 
-        self.analyzer = (
-            DifficultyAnalyzer()
-        )
+        self.analyzer = DifficultyAnalyzer()
 
     # ----------------------------------
     # Difficulty Analysis
@@ -39,12 +35,7 @@ class CurriculumBenchmark:
         for a single record.
         """
 
-        return (
-            self.analyzer
-            .analyze(
-                record
-            )
-        )
+        return self.analyzer.analyze(record)
 
     def _get_difficulty_score(
         self,
@@ -54,15 +45,9 @@ class CurriculumBenchmark:
         Extract difficulty score.
         """
 
-        analysis = (
-            self._get_difficulty_analysis(
-                record
-            )
-        )
+        analysis = self._get_difficulty_analysis(record)
 
-        return analysis[
-            "difficulty_score"
-        ]
+        return analysis["difficulty_score"]
 
     def _get_difficulty_level(
         self,
@@ -72,15 +57,9 @@ class CurriculumBenchmark:
         Extract difficulty level.
         """
 
-        analysis = (
-            self._get_difficulty_analysis(
-                record
-            )
-        )
+        analysis = self._get_difficulty_analysis(record)
 
-        return analysis[
-            "difficulty_level"
-        ]
+        return analysis["difficulty_level"]
 
     # ----------------------------------
     # Curriculum Benchmark Groups
@@ -91,17 +70,9 @@ class CurriculumBenchmark:
     ):
 
         return [
-
             record
-
             for record in self.records
-
-            if (
-                self._get_difficulty_level(
-                    record
-                )
-                == "easy"
-            )
+            if (self._get_difficulty_level(record) == "easy")
         ]
 
     def get_medium_records(
@@ -109,17 +80,9 @@ class CurriculumBenchmark:
     ):
 
         return [
-
             record
-
             for record in self.records
-
-            if (
-                self._get_difficulty_level(
-                    record
-                )
-                == "medium"
-            )
+            if (self._get_difficulty_level(record) == "medium")
         ]
 
     def get_hard_records(
@@ -127,17 +90,9 @@ class CurriculumBenchmark:
     ):
 
         return [
-
             record
-
             for record in self.records
-
-            if (
-                self._get_difficulty_level(
-                    record
-                )
-                == "hard"
-            )
+            if (self._get_difficulty_level(record) == "hard")
         ]
 
     # ----------------------------------
@@ -149,21 +104,9 @@ class CurriculumBenchmark:
     ):
 
         summary = {
-
-            "easy":
-                len(
-                    self.get_easy_records()
-                ),
-
-            "medium":
-                len(
-                    self.get_medium_records()
-                ),
-
-            "hard":
-                len(
-                    self.get_hard_records()
-                ),
+            "easy": len(self.get_easy_records()),
+            "medium": len(self.get_medium_records()),
+            "hard": len(self.get_hard_records()),
         }
 
         return summary

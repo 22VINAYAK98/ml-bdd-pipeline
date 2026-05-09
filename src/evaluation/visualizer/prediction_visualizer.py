@@ -18,9 +18,7 @@ class PredictionVisualizer:
         output_dir,
     ):
 
-        self.model = YOLO(
-            model_path
-        )
+        self.model = YOLO(model_path)
 
         self.output_dir = output_dir
 
@@ -40,9 +38,7 @@ class PredictionVisualizer:
 
         for image_path in image_paths:
 
-            self._visualize_single_image(
-                image_path
-            )
+            self._visualize_single_image(image_path)
 
     def _visualize_single_image(
         self,
@@ -54,20 +50,12 @@ class PredictionVisualizer:
         """
 
         self.model.predict(
-
             source=image_path,
-
             conf=0.01,
-
             save=True,
-
             project="/app/outputs",
-
             name="prediction_visualizations",
-
             exist_ok=True,
         )
 
-        print(
-            f"Processed: {image_path}"
-        )
+        print(f"Processed: {image_path}")

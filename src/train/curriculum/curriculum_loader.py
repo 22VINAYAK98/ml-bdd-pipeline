@@ -2,9 +2,7 @@
 Curriculum-aware dataset loader.
 """
 
-from src.train.curriculum.curriculum_scheduler import (
-    CurriculumScheduler,
-)
+from src.train.curriculum.curriculum_scheduler import CurriculumScheduler
 
 
 class CurriculumLoader:
@@ -17,15 +15,9 @@ class CurriculumLoader:
 
         self.records = records
 
-        self.scheduler = (
-            CurriculumScheduler(
-                self.records
-            )
-        )
+        self.scheduler = CurriculumScheduler(self.records)
 
-        self.curriculum = (
-            self.scheduler.build_curriculum()
-        )
+        self.curriculum = self.scheduler.build_curriculum()
 
     def get_stage_records(
         self,
@@ -45,9 +37,7 @@ class CurriculumLoader:
 
         if stage not in self.curriculum:
 
-            raise ValueError(
-                f"Invalid stage: {stage}"
-            )
+            raise ValueError(f"Invalid stage: {stage}")
 
         return self.curriculum[stage]
 
@@ -58,9 +48,7 @@ class CurriculumLoader:
 
         summary = {}
 
-        for stage, records in (
-            self.curriculum.items()
-        ):
+        for stage, records in self.curriculum.items():
 
             summary[stage] = len(records)
 

@@ -8,9 +8,7 @@ Responsible for orchestrating:
 - evaluation
 """
 
-from src.train.curriculum.curriculum_loader import (
-    CurriculumLoader,
-)
+from src.train.curriculum.curriculum_loader import CurriculumLoader
 
 
 class TrainingPipeline:
@@ -29,11 +27,7 @@ class TrainingPipeline:
 
         self.strategy = strategy
 
-        self.curriculum_loader = (
-            CurriculumLoader(
-                self.records
-            )
-        )
+        self.curriculum_loader = CurriculumLoader(self.records)
 
     def run(
         self,
@@ -47,21 +41,11 @@ class TrainingPipeline:
                 easy / medium / hard
         """
 
-        staged_records = (
-            self.curriculum_loader
-            .get_stage_records(
-                curriculum_stage
-            )
-        )
+        staged_records = self.curriculum_loader.get_stage_records(curriculum_stage)
 
-        records = [
-            sample["record"]
-            for sample in staged_records
-        ]
+        records = [sample["record"] for sample in staged_records]
 
-        self.strategy.prepare_dataset(
-            records
-        )
+        self.strategy.prepare_dataset(records)
 
         self.strategy.build_model()
 

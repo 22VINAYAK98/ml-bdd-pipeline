@@ -3,7 +3,6 @@ Different Category of Objects/ laabels of objects  Present and label mappings fo
 Keeps category handling consistent across parsing, analysis, training, and evaluation pipelines.
 """
 
-
 DETECTION_CLASSES = {
     "person",
     "rider",
@@ -19,7 +18,6 @@ DETECTION_CLASSES = {
 
 
 CLASS_TO_ID = {
-
     "pedestrian": 0,
     "rider": 1,
     "car": 2,
