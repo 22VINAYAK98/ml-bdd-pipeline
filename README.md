@@ -1986,20 +1986,29 @@ This example shows that the detector performs more consistently under comparativ
 
 ### Observation
 
-The detector is able to identify the major nearby vehicles correctly while maintaining reasonably stable localization overlap with ground truth annotations.
+The detector is able to identify the primary nearby ego-lane vehicle reasonably well with stable localization overlap against the ground truth annotation.
 
-However, smaller and more distant objects begin showing comparatively weaker localization consistency compared to easier scenes.
+However, several other scene elements such as:
+
+* oncoming vehicles
+* distant traffic participants
+* traffic lights
+
+are either weakly detected or completely missed.
+
+One of the oncoming vehicles is partially visible due to tree occlusion, while another appears comparatively smaller and farther from the ego vehicle.
 
 ### Possible Cause
 
-This scene contains moderately challenging perception conditions such as:
+This scene introduces moderately challenging perception conditions such as:
 
-* mixed object scales
-* brighter illumination regions
-* partially distant objects
-* moderate scene complexity
+* partial occlusion
+* mixed object distance
+* smaller distant vehicles
+* traffic infrastructure elements with limited visibility
+* moderate scene clutter
 
-These conditions increase perception variability compared to simpler benchmark scenes.
+These conditions reduce clear feature visibility for smaller and partially visible objects, causing the detector to prioritize larger and more prominent nearby vehicles more consistently.
 
 ### General Insight
 
@@ -2011,23 +2020,40 @@ This example demonstrates how detector behavior gradually becomes less stable as
 
 ### Observation
 
-The detector is still able to identify several major traffic participants, including vehicles, pedestrians, traffic lights, and traffic signs.
+The detector is able to identify several major nearby vehicles reasonably well even under difficult nighttime urban conditions.
 
-However, localization mismatch, overlapping predictions, and confidence variation become noticeably higher compared to easy and medium benchmark scenes.
+However, a noticeable number of vulnerable road users, traffic lights, and traffic signs are still missed where only ground-truth annotations are visible.
 
-Smaller and distant objects also become comparatively more difficult to localize consistently.
+Detection consistency also reduces for:
+
+* smaller objects
+* distant traffic participants
+* cluttered scene regions
+
+compared to easy and medium benchmark examples.
 
 ### Possible Cause
 
-This scene combines several difficult perception conditions simultaneously such as:
+This scene combines multiple difficult perception conditions simultaneously such as:
 
 * nighttime illumination
 * dense urban traffic
 * multiple nearby objects
-* smaller distant traffic participants
+* smaller distant objects
 * cluttered scene structure
+* vulnerable road users under low visibility
 
-These conditions increase scene complexity and reduce stable visual feature separation between nearby objects.
+These conditions reduce feature visibility and make smaller infrastructure elements and VRUs significantly harder to detect consistently.
+
+The limited training size of:
+
+```text
+500 medium-difficulty images
+```
+
+also contributes to weaker generalization on highly complex nighttime scenes.
+````
+
 
 
 ## Quantitative Curriculum-Based Evaluation
@@ -2159,6 +2185,272 @@ git add .
 git commit -m "message"
 git push
 ```
+
+# Project Summary
+
+This project focused on building a modular and reusable ADAS-oriented perception pipeline on top of the BDD100K dataset instead of only training a standalone object detector.
+
+The overall workflow was intentionally designed around:
+
+* structured dataset handling
+* perception-oriented analysis
+* curriculum-aware training
+* scenario-based benchmarking
+* qualitative visualization
+* quantitative evaluation
+* Docker reproducibility
+
+The project gradually evolved from:
+
+```text
+dataset parsing
+        ↓
+analysis
+        ↓
+training pipeline
+        ↓
+curriculum learning
+        ↓
+scenario benchmarking
+        ↓
+ADAS-oriented evaluation
+```
+
+rather than directly optimizing only for benchmark accuracy.
+
+---
+
+# Key Outcomes From Experiments
+
+The experiments highlighted several important ADAS perception observations.
+
+## Dataset-Level Insights
+
+The earlier analysis revealed that the dataset contains:
+
+* strong daytime dominance
+* heavy class imbalance
+* high object occlusion
+* large number of smaller distant objects
+* limited nighttime representation
+* safety-critical VRU scenarios
+
+These observations directly influenced later training and evaluation strategy decisions.
+
+---
+
+## Training Observations
+
+Even though training was intentionally performed only on:
+
+```text
+500 medium-difficulty images
+```
+
+for approximately:
+
+```text
+200 epochs
+```
+
+the detector was still able to learn meaningful object representations for:
+
+* nearby vehicles
+* larger traffic participants
+* moderately visible scenes
+
+The experiments also showed expected degradation under:
+
+* nighttime scenes
+* dense urban traffic
+* smaller distant objects
+* partially occluded traffic participants
+* VRU-heavy scenarios
+
+which aligns closely with real-world ADAS perception challenges.
+
+---
+
+## Curriculum Benchmarking Insights
+
+The curriculum-based evaluation clearly demonstrated that detector robustness gradually reduces as scene complexity increases.
+
+Performance remained comparatively stable for:
+
+* easy scenes
+* moderately difficult scenes
+
+while hard scenes containing:
+
+* nighttime visibility
+* dense traffic
+* cluttered urban structure
+* smaller objects
+* occluded VRUs
+
+introduced substantially higher perception difficulty.
+
+This validated the usefulness of difficulty-aware evaluation instead of relying only on global aggregate metrics.
+
+---
+
+## Scenario-Based Benchmarking Insights
+
+Scenario-based benchmarking helped isolate specific operational perception challenges such as:
+
+* night + VRU
+* night + occlusion
+* dense traffic
+* distant object visibility
+
+The GT vs prediction visualizations made it easier to identify:
+
+* missed detections
+* localization instability
+* weak small-object perception
+* nighttime degradation
+* infrastructure detection limitations
+
+which are often difficult to interpret from aggregate metrics alone.
+
+---
+
+# Future Scope and Possible Extensions
+
+The current implementation mainly validates the architecture and perception workflow.
+
+Several future extensions are possible.
+
+## Model Benchmarking
+
+The same training and evaluation pipeline can later be benchmarked against:
+
+* Faster R-CNN
+* DETR
+* RT-DETR
+* YOLO-NAS
+* EfficientDet
+* transformer-based perception models
+
+to compare:
+
+* robustness
+* inference speed
+* nighttime perception
+* VRU detection performance
+* small-object handling
+
+under identical evaluation conditions.
+
+---
+
+## Larger Curriculum Training
+
+Future experiments may include:
+
+* full-scale BDD100K training
+* staged easy → medium → hard curriculum progression
+* hard-example mining
+* nighttime-focused curriculum stages
+* VRU-prioritized sampling
+
+to further improve difficult-scene robustness.
+
+---
+
+## Multi-Task ADAS Extension
+
+The current project focuses only on object detection.
+
+The same architecture can later be extended toward:
+
+* lane detection
+* drivable-area segmentation
+* traffic-light state recognition
+* multi-camera perception
+* sensor fusion
+* temporal perception models
+
+for building a more complete ADAS perception stack.
+
+---
+
+## Advanced Evaluation Extensions
+
+Future evaluation improvements may include:
+
+* weather-wise benchmarking
+* distance-aware metrics
+* temporal consistency evaluation
+* tracking stability analysis
+* failure-case clustering
+* perception latency analysis
+
+to further improve perception-oriented understanding.
+
+---
+
+# Model Weights and Saved Outputs
+
+The repository intentionally does not include:
+
+* trained model weights
+* large YOLO checkpoints
+* complete training artifacts
+
+such as:
+
+```text
+best.pt
+last.pt
+```
+
+This decision was intentionally made because:
+
+* large binary artifacts unnecessarily increase repository size
+* generated outputs can become very large over repeated experiments
+* the project focus is primarily pipeline architecture and reproducibility
+* training can be reproduced directly using the provided scripts and Docker workflow
+
+---
+
+# Important Note About Training Output Paths
+
+YOLO training output directories are automatically versioned depending on how many times training is executed.
+
+Example:
+
+```text
+outputs/yolo_training/
+outputs/yolo_training2/
+outputs/yolo_training3/
+```
+
+Therefore, evaluation scripts may require updating the model path depending on the latest generated training directory.
+
+Example:
+
+```python
+model_path = "outputs/yolo_training3/weights/best.pt"
+```
+
+The exact folder suffix may vary across runs.
+
+---
+
+# Final Conclusion
+
+The overall objective of this project was not only training an object detector, but designing a reusable ADAS-oriented experimentation pipeline capable of supporting:
+
+* perception analysis
+* curriculum-aware training
+* scenario benchmarking
+* difficult-scene evaluation
+* qualitative failure analysis
+* reproducible experimentation workflows
+
+The final implementation demonstrates how autonomous driving perception evaluation can move beyond generic benchmark metrics toward more perception-oriented and scenario-aware analysis.
+
 
 ---
 
